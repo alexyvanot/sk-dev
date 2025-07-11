@@ -14,7 +14,7 @@ paper.jar.bak
 plugins/skript.jar
 plugins/skript.jar.bak
 
-
+.console_history
 banned-ips.json
 banned-players.json
 ops.json
