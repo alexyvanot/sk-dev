@@ -22,11 +22,11 @@ usercache.json
 version_history.json
 whitelist.json
 
-/plugins/
 /plugins/.paper-remapped/
 /plugins/spark/
+/plugins/bStats/
 
 /plugins/Skript/lang/
 *.csv
 /plugins/Skript/scripts/-examples/
-/plugins/Skript/scripts/-examples/--*
+/plugins/Skript/scripts/--*
