@@ -1,0 +1,73 @@
+# Cette commande affiche la date actuelle et le jour de la semaine
+# Output example: Saturday 12/07/2025 00:11
+command /now:
+    trigger:
+        set {_date} to now formatted as "dd/MM/yy HH:MM z"
+        send "%getDayOfTheWeek({_date})% %{_date}%" to sender
+
+# This function returns the day of the week for a given date
+# Uses the Zeller's Congruence algorithm to calculate the day of the week
+# Ref: https://fr.wikipedia.org/wiki/D%C3%A9termination_du_jour_de_la_semaine
+function getDayOfTheWeek(d: date) :: string:
+    set {_date::*} to formatDate({_d})
+    set {_day} to {_date::1}
+    set {_month} to {_date::2}
+    set {_year} to {_date::3}
+    if {_month} is "January":
+        set {_month} to 13
+        set {_year} to {_year} - 1
+    else if {_month} is "February":
+        set {_month} to 14
+        set {_year} to {_year} - 1
+    else:
+        set {_month} to {_month} + 1
+    set {_k} to modulo({_year}, 100)
+    set {_j} to {_year} / 100
+    set {_f} to {_day} + (13 * ({_month} + 1)) / 5 + {_k} + {_k} / 4 + {_j} / 4 - (2 * {_j})
+    set {_f} to modulo({_f}, 7)
+    if {_f} is 0:
+        return "Saturday"
+    else if {_f} is 1:
+        return "Sunday"
+    else if {_f} is 2:
+        return "Monday"
+    else if {_f} is 3:
+        return "Tuesday"
+    else if {_f} is 4:
+        return "Wednesday"
+    else if {_f} is 5:
+        return "Thursday"
+    else:
+        return "Friday"
+
+# Returns a formatted date as a list of strings
+# Format: [day, month, year, hour, minute]
+# {_value::1} = day, {_value::2} = month, {_value::3} = year, {_value::4} = hour, {_value::5} = minute
+# Ref: https://skript-mc.fr/forum/topic/14832-r%C3%A9cup%C3%A9r%C3%A9-des-informations-sur-une-date-novice/
+function formatDate(d: date) :: objects: 
+    set {_date::*} to "%{_d}%" split by "/"
+    set {_day} to {_date::1}
+    set {_month} to {_date::2}
+    set {_t::*} to "%{_date::3}%" split by " "
+    set {_year} to {_t::1}
+    set {_time::*} to {_t::2} split by ":"
+    set {_hour} to {_time::1}
+    set {_minute} to {_time::2}
+    add {_day} to {_value::*}
+    add {_month} to {_value::*}
+    add {_year} to {_value::*}
+    add {_hour} to {_value::*}
+    add {_minute} to {_value::*}
+    return {_value::*}
+
+# Skript modulo function
+# https://skript-mc.fr/forum/topic/16351-skript-modulo/#findComment-131599
+function modulo(n1: number, n2: number) :: number:
+	set {_divise} to round down ({_n1} / {_n2})
+	set {_multiple} to {_n2} * {_divise}
+	set {_modulo} to ({_n1} - {_multiple})
+	return {_modulo}
+
+# Ressources mention spéciale:
+# date() function : https://skripthub.net/docs/?id=2116
+# utilisation des fonction : https://skripthub.net/tutorials/9
